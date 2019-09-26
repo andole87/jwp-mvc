@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Date;
@@ -72,7 +73,7 @@ public class ReflectionTest {
     @SuppressWarnings("rawtypes")
     public void constructor_with_args() throws Exception {
         Class<Question> clazz = Question.class;
-        Constructor[] constructors = clazz.getConstructors();
+        Constructor[] constructors = clazz.getDeclaredConstructors();
         for (Constructor constructor : constructors) {
             Class[] parameterTypes = constructor.getParameterTypes();
             logger.debug("paramer length : {}", parameterTypes.length);
@@ -111,14 +112,27 @@ public class ReflectionTest {
     }
 
     @Test
-    public void privateFieldAccess() {
+    public void privateFieldAccess() throws Exception {
         Class<Student> clazz = Student.class;
         logger.debug(clazz.getName());
 
-        // TODO Student private field에 값을 저장하고 조회한다.
+        Student student = clazz.getDeclaredConstructor().newInstance();
+        Field[] fields = student.getClass().getDeclaredFields();
+
+        Field field = fields[0];
+        field.setAccessible(true);
+        field.set(student, "andole");
+
+        assertThat(student.getName()).isEqualTo("andole");
+
+        field = fields[1];
+        field.setAccessible(true);
+        field.set(student, 27);
+
+        assertThat(student.getAge()).isEqualTo(27);
     }
 
-    public static enum AccessModifier {
+    public enum AccessModifier {
         PACKAGE_PRIVATE(0),
         PUBLIC(1),
         PRIVATE(2),
