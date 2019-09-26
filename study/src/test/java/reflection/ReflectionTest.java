@@ -7,8 +7,12 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class ReflectionTest {
     private static final Logger logger = LoggerFactory.getLogger(ReflectionTest.class);
@@ -75,9 +79,35 @@ public class ReflectionTest {
             for (Class paramType : parameterTypes) {
                 logger.debug("param type : {}", paramType);
             }
-        }
 
-        // TODO 인자를 가진 생성자를 활용해 인스턴스를 생성한다.
+            if (parameterTypes.length == 3) {
+                Object object = constructor.newInstance("writer", "title", "contents");
+                logger.debug(object.toString());
+
+                assertThat(object instanceof Question).isTrue();
+                assertDoesNotThrow(() -> (Question) object);
+
+                Question question = (Question) object;
+
+                assertThat(question.getWriter()).isEqualTo("writer");
+                assertThat(question.getTitle()).isEqualTo("title");
+                assertThat(question.getContents()).isEqualTo("contents");
+            } else if (parameterTypes.length == 6) {
+                Object object = constructor.newInstance(1L, "writer", "title", "contents", new Date(), 0);
+                logger.debug(object.toString());
+
+                assertThat(object instanceof Question).isTrue();
+                assertDoesNotThrow(() -> (Question) object);
+
+                Question question = (Question) object;
+
+                assertThat(question.getQuestionId()).isEqualTo(1L);
+                assertThat(question.getWriter()).isEqualTo("writer");
+                assertThat(question.getTitle()).isEqualTo("title");
+                assertThat(question.getContents()).isEqualTo("contents");
+                assertThat(question.getCountOfComment()).isEqualTo(0);
+            }
+        }
     }
 
     @Test
