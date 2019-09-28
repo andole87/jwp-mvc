@@ -1,10 +1,11 @@
 package nextstep.mvc.tobe;
 
-import nextstep.db.DataBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import slipp.domain.User;
+import slipp.support.db.DataBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,7 +14,7 @@ public class AnnotationHandlerMappingTest {
 
     @BeforeEach
     public void setup() {
-        handlerMapping = new AnnotationHandlerMapping("nextstep.mvc.tobe");
+        handlerMapping = new AnnotationHandlerMapping("slipp.controller");
         handlerMapping.initialize();
     }
 
@@ -21,6 +22,7 @@ public class AnnotationHandlerMappingTest {
     public void create_find() throws Exception {
         User user = new User("pobi", "password", "포비", "pobi@nextstep.camp");
         createUser(user);
+
         assertThat(DataBase.findUserById(user.getUserId())).isEqualTo(user);
 
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/users");

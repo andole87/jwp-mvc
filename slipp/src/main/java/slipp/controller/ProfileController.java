@@ -1,12 +1,16 @@
 package slipp.controller;
 
+import nextstep.mvc.asis.Controller;
+import nextstep.web.annotation.RequestMapping;
+import nextstep.web.annotation.RequestMethod;
 import slipp.domain.User;
 import slipp.support.db.DataBase;
-import nextstep.mvc.asis.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@nextstep.web.annotation.Controller
+@RequestMapping(method = RequestMethod.GET, value = "/users")
 public class ProfileController implements Controller {
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {
